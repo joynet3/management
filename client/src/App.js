@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import Customer from './components/Customer'
 import { Component } from 'react';
@@ -22,36 +21,26 @@ const styles = theme => ({
   }
 })
 
-const datas = [
-  {
-    "id" : '1',
-    "image" : "http://placeimg.com/65/65/any",
-    "name" : "조일근",
-    "brthday" : "19760126",
-    "gender" : "남",
-    "job" : "프로그래머",
-  },
-  {
-    "id" : '2',
-    "image" : "http://placeimg.com/65/65/any",
-    "name" : "홍길동",
-    "brthday" : "19780811",
-    "gender" : "남",
-    "job" : "백수",
-  },
-  {
-    "id" : '3',
-    "image" : "http://placeimg.com/65/65/any",
-    "name" : "김개똥",
-    "brthday" : "19760426",
-    "gender" : "남",
-    "job" : "몰라",
-  }
-]
 
 
 
 class App extends Component {
+  state = {
+    customer:""
+  }
+
+  componentDidMount() {
+    this.callApi()
+    .then(res => this.setState({customer:res}))
+    .catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -69,7 +58,8 @@ class App extends Component {
         </TableHead>
         <TableBody>
           {
-            datas.map (c => {
+            this.state.customer ?
+            this.state.customer.map (c => {
               return (
                 <Customer 
                     key={c.id}
@@ -81,7 +71,7 @@ class App extends Component {
                     job={c.job}
                   />
               )
-            })
+            }) : ''
           }
       </TableBody>
       </Table>
